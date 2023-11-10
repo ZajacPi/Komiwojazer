@@ -1,7 +1,3 @@
-//
-// Created by Dominika on 30.09.2020.
-//
-
 #ifndef IMPLEMENTATION_TSP_HPP
 #define IMPLEMENTATION_TSP_HPP
 
