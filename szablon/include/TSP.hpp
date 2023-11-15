@@ -92,7 +92,6 @@ private:
 cost_t get_optimal_cost(const path_t& optimal_path, const cost_matrix_t& m);
 StageState create_right_branch_matrix(cost_matrix_t m, vertex_t v, cost_t lb);
 tsp_solutions_t filter_solutions(tsp_solutions_t solutions);
-
 tsp_solutions_t solve_tsp(const cost_matrix_t& cm);
 
 #endif //IMPLEMENTATION_TSP_HPP

@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <stack>
 #include <optional>
+#include <TSP.cpp>
+
 
 std::ostream& operator<<(std::ostream& os, const CostMatrix& cm) {
     for (std::size_t r = 0; r < cm.size(); ++r) {
@@ -24,7 +26,17 @@ std::ostream& operator<<(std::ostream& os, const CostMatrix& cm) {
  * @return The vector of consecutive vertex.
  */
 path_t StageState::get_path() {
-    throw;  // TODO: Implement it!
+    // typ path_t to
+    path_t sorted_path = {unsorted_path_[0].col};
+    unsorted_path_[0].row = INF;
+    size_t unsorted_size = get_level();
+    for(int i = 0; i<unsorted_size; i++){
+        if(unsorted_path_[i].row == sorted_path.back()){
+
+        }
+    }
+
+    return sorted_path;
 }
 
 /**
@@ -32,7 +44,13 @@ path_t StageState::get_path() {
  * @return Vector of minimum values in row.
  */
 std::vector<cost_t> CostMatrix::get_min_values_in_rows() const {
-    throw;  // TODO: Implement it!
+    // tworzę pusty wektor najkrótszych dróg w rzędach (czyli ma w sobie dane typu cost_t)
+    std::vector<cost_t> min_values = {};
+    std::size_t matrix_size = size();
+
+    for (int i=0; i<matrix_size; i++){
+
+    }
 }
 
 /**
