@@ -12,4 +12,4 @@ set(SOURCE_FILES
         src/TSP.cpp
         )
 
-add_executable(tsp ${SOURCE_FILES} main.cpp)
+add_executable(tsp ${SOURCE_FILES} main.cpp tests/v1_tests.cpp)
