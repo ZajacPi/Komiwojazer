@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <stack>
 #include <optional>
-#include <TSP.cpp>
 
 
 std::ostream& operator<<(std::ostream& os, const CostMatrix& cm) {
@@ -26,18 +25,28 @@ std::ostream& operator<<(std::ostream& os, const CostMatrix& cm) {
  * @return The vector of consecutive vertex.
  */
 path_t StageState::get_path() {
-    // typ path_t to
-    path_t sorted_path = {unsorted_path_[0].col};
-    unsorted_path_[0].row = INF;
-    size_t unsorted_size = get_level();
-    for(int i = 0; i<unsorted_size; i++){
-        if(unsorted_path_[i].row == sorted_path.back()){
+    path_t sorted_path;
+    // co to znaczy reserve???
+    sorted_path.reserve(unsorted_path_.size());
+    // to jest bardzo fajne użycie, wektor o wielkości nieposortowanego, ustawiamy wszystko na false
+    std::vector<bool> visited(unsorted_path_.size(), false);
 
+    sorted_path.push_back(unsorted_path_[0].col);
+    visited[0] = true;
+
+    for (size_t i = 0; i < unsorted_path_.size(); i++) {
+        for (size_t j = 0; j < unsorted_path_.size(); j++) {
+            //zmienić zapis
+            if (!visited[j] && unsorted_path_[j].row == sorted_path.back()) {
+                sorted_path.push_back(unsorted_path_[j].col);
+                visited[j] = true;
+                break;
+            }
         }
     }
-
     return sorted_path;
 }
+
 
 /**
  * Get minimum values from each row and returns them.
@@ -46,11 +55,19 @@ path_t StageState::get_path() {
 std::vector<cost_t> CostMatrix::get_min_values_in_rows() const {
     // tworzę pusty wektor najkrótszych dróg w rzędach (czyli ma w sobie dane typu cost_t)
     std::vector<cost_t> min_values = {};
-    std::size_t matrix_size = size();
+    for (const auto &row: matrix_){
+        cost_t min_value = INF;
 
-    for (int i=0; i<matrix_size; i++){
+        for(const auto &current_value: row){
 
+            if(current_value < min_value){
+                min_value = current_value;
+            }
+        }
+        // dodaję do wektora minimalnych wartości w rzędach
+        min_values.push_back(min_value);
     }
+    return min_values;
 }
 
 /**
@@ -58,24 +75,68 @@ std::vector<cost_t> CostMatrix::get_min_values_in_rows() const {
  * @return Sum of values reduced in rows.
  */
 cost_t CostMatrix::reduce_rows() {
-    throw;  // TODO: Implement it!
+    std::vector<cost_t> minValuesVector = get_min_values_in_rows();
+    cost_t sum = 0;
+
+    for (int i = 0; i < matrix_.size(); i++) {
+        for (int j = 0; j < matrix_[0].size(); j++) {
+            // teraz sprawdzam każdy element macierzy po kolei, sprawdzam czy nie jest nieskończonością
+            if (matrix_[i][j] < INF) {
+                matrix_[i][j] -= minValuesVector[i];
+            }
+        }
+        sum += minValuesVector[i];
+    }
+    return sum;
 }
 
 /**
  * Get minimum values from each column and returns them.
  * @return Vector of minimum values in columns.
  */
-std::vector<cost_t> CostMatrix::get_min_values_in_cols() const {
-    std::vector<cost_t> min_values;
-    throw;  // TODO: Implement it!
-}
 
+
+    std::vector<cost_t> CostMatrix::get_min_values_in_cols() const {
+    // tworzę kopię macierzy, którą stransponuję i na niej użyję min_values_in_rows()
+    CostMatrix CostMatrix_copy = *this;
+
+    // w razie czego, jakby wcześniej nie została wywołana, nic się nie stanie jak będzie drugi raz bo będą odejmowane zera
+    CostMatrix_copy.reduce_rows();
+// zrobiłem publiczną funkcję transposeMatrix
+//    int rows = CostMatrix_copy.size();
+//    int cols = CostMatrix_copy[0].size();
+//
+//    cost_matrix_t transposed(cols, std::vector<cost_t>(rows));
+//
+//    for (int i = 0; i < rows; ++i) {
+//        for (int j = 0; j < cols; ++j) {
+//            transposed[j][i] = CostMatrix_copy[i][j];
+//        }
+//    }
+//    CostMatrix_copy = transposed;
+    transposeMatrix(CostMatrix_copy.matrix_);
+    return CostMatrix_copy.get_min_values_in_rows();
+}
 /**
  * Reduces rows so that in each column at least one zero value is present.
  * @return Sum of values reduced in columns.
  */
 cost_t CostMatrix::reduce_cols() {
-    throw;  // TODO: Implement it!
+//     chciałem z transponowaniem, reduce_rows i znowu tranbsponować ale w tamtej funkcji wołamy min_values_in_row, dałoby się to zrobic tak żeby funkcja reduce_rows wiedziała że została wywołana przezz reduce_cols()?
+    std::vector<cost_t> minValuesVector = get_min_values_in_cols();
+    cost_t sum = 0;
+    transposeMatrix(matrix_);
+    for (int i = 0; i < matrix_.size(); i++) {
+        for (int j = 0; j < matrix_[0].size(); j++) {
+            // teraz sprawdzam każdy element macierzy po kolei, sprawdzam czy nie jest nieskończonością
+            if (matrix_[i][j] < INF) {
+                matrix_[i][j] -= minValuesVector[i];
+            }
+        }
+        sum += minValuesVector[i];
+    }
+    transposeMatrix(matrix_);
+    return sum;
 }
 
 /**
@@ -85,9 +146,26 @@ cost_t CostMatrix::reduce_cols() {
  * @return The sum of minimal values in row and col, excluding the intersection value.
  */
 cost_t CostMatrix::get_vertex_cost(std::size_t row, std::size_t col) const {
-    throw;  // TODO: Implement it!
+    cost_t minRowValue = INF;
+    cost_t minColValue = INF;
+    int sum;
+    for (int j = 0; j < matrix_[0].size(); j++) {
+        if (j != col) { // bo nie chcę na przecięciu
+            if (matrix_[row][j] < minRowValue) {
+                minRowValue = matrix_[row][j];
+            }
+        }
+    }
+    for (int i = 0; i < matrix_.size(); i++) {
+        if (i != row) {
+            if (matrix_[i][col] < minColValue) {
+                minColValue = matrix_[i][col];
+            }
+        }
+    }
+    sum = minColValue + minRowValue;
+    return sum;
 }
-
 /* PART 2 */
 
 /**
