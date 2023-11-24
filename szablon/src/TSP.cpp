@@ -177,8 +177,26 @@ cost_t CostMatrix::get_vertex_cost(std::size_t row, std::size_t col) const {
  * @return The coordinates of the next vertex.
  */
 NewVertex StageState::choose_new_vertex() {
-    throw;  // TODO: Implement it!
-}
+//    struct NewVertex {
+//        NewVertex(vertex_t v = {}, cost_t cost = 0) : coordinates(v), cost(cost) {}
+//
+//        vertex_t coordinates;
+//        cost_t cost;
+//    };
+    cost_t max_val = 0;
+    vertex_t row, col;
+
+    for (int i = 0; i < matrix_.size(); i++) {
+        for (int j = 0; j < matrix_[0].size(); j++) {
+            cost_t current_value = matrix_.get_vertex_cost(i, j);
+            if (current_value > max_val) {
+                current_value = max_val;
+                row = i;
+                col = j;
+            }
+        }
+        return NewVertex((row, col), max_val);
+    }
 
 /**
  * Update the cost matrix with the new vertex.

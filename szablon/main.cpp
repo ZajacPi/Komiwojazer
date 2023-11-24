@@ -12,7 +12,8 @@ int main() {
     CostMatrix costMatrix(cm);
     std::cout<<"Testuje macierz: " << std::endl;
     std::cout<<costMatrix;
-
+    //muszę stworzyć instację klasy StageState
+    StageState stageState(costMatrix, )
 //    /**TEST 1*/
 //    StageState stageState(costMatrix);
 //
@@ -62,5 +63,13 @@ int main() {
     cost_t cost = costMatrix.get_vertex_cost(row, col);
     std::cout<< "kosz na przecieciu " << row << " i " << col << " wynosi: " << cost;
 
-        return 0;
+
+    /**PARTES DOS*/
+
+
+    /**TEST 7*/
+    //Szukam wszystkich miejsc ktore maja zera, i znajduje to z najwiekszym kosztem
+    std::cout<<"Szukam wszystkich miejsc ktore maja zera, i znajduje to z najwiekszym kosztem: ";
+    costMatrix.;
+    return 0;
 }
