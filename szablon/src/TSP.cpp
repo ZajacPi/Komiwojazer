@@ -16,6 +16,22 @@ std::ostream& operator<<(std::ostream& os, const CostMatrix& cm) {
 
     return os;
 }
+// stworzyłem funkcję transpose
+void transposeMatrix(cost_matrix_t& matrix) {
+    int rows = matrix.size();
+    int cols = matrix[0].size();
+
+    cost_matrix_t transposed(cols, std::vector<cost_t>(rows));
+
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            transposed[j][i] = matrix[i][j];
+        }
+    }
+
+    // Update the original matrix with the transposed matrix
+    matrix = transposed;
+}
 
 /* PART 1 */
 

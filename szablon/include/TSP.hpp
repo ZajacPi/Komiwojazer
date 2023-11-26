@@ -50,21 +50,21 @@ public:
 
     cost_t get_vertex_cost(std::size_t row, std::size_t col) const;
 
-    void transposeMatrix(cost_matrix_t& matrix) const {
-        int rows = matrix.size();
-        int cols = matrix[0].size();
-
-        cost_matrix_t transposed(cols, std::vector<cost_t>(rows));
-
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
-                transposed[j][i] = matrix[i][j];
-            }
-        }
-
-        // Update the original matrix with the transposed matrix
-        matrix = transposed;
-    }
+//    void transposeMatrix(cost_matrix_t& matrix) const {
+//        int rows = matrix.size();
+//        int cols = matrix[0].size();
+//
+//        cost_matrix_t transposed(cols, std::vector<cost_t>(rows));
+//
+//        for (int i = 0; i < rows; ++i) {
+//            for (int j = 0; j < cols; ++j) {
+//                transposed[j][i] = matrix[i][j];
+//            }
+//        }
+//
+//        // Update the original matrix with the transposed matrix
+//        matrix = transposed;
+//    }
 
 private:
     cost_matrix_t matrix_;
